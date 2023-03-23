@@ -1,16 +1,18 @@
 import { Route } from "react-router-dom";
-import { useEffect } from "react";
-import { useNavigate, Redirect } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
 
+import { UserContext } from "../context/UserContext";
+import { Navigate } from "react-router-dom";
 const PriavteRoutes = ({ children }) => {
-  const navigate = useNavigate();
-  let session;
   useEffect(() => {
-    session = sessionStorage.getItem("account");
-    if (!session) {
-      navigate("/login");
-    }
+    console.log("hello");
   }, []);
-  return <>{session ? children : <h1>Loanding .....</h1>}</>;
+  const { user } = useContext(UserContext);
+  console.log(user);
+  if (user.isAuthenticated) {
+    return <>{children}</>;
+  } else {
+    return <Navigate to="/login" />;
+  }
 };
 export default PriavteRoutes;

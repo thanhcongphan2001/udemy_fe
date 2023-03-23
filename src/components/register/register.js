@@ -75,13 +75,13 @@ function Register(props) {
     let valid = isValid();
 
     if (valid) {
-      const response = await registerNewUser(data);
-      const serverData = response.data;
-      if (+serverData.EC === 0) {
-        toast.success(serverData.EM);
+      const datares = await registerNewUser(data);
+
+      if (datares && datares.data && +datares.data.EC === 0) {
+        toast.success(datares.data.EM);
         navigate("/login");
       } else {
-        toast.error(serverData.EM);
+        toast.error(datares.data.EM);
       }
     }
   };

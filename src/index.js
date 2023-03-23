@@ -5,36 +5,56 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Admin from "./components/Admin";
+import About from "./components/About";
 import User from "./components/User";
 import Home from "./components/Home";
 import Login from "./components/login/login";
 import Register from "./components/register/register";
+import GroupRole from "./components/GroupRole";
 import PriavteRoutes from "./routes/privateRoutes";
+import { UserProvider } from "./context/UserContext";
+import Role from "./components/role";
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const Private = () => <div>private</div>;
+
 root.render(
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<App />}>
-        <Route path="admins" element={<Admin />} />
+  <BrowserRouter basename="/cc">
+    <UserProvider>
+      <Routes>
+        <Route path="/" element={<App />}>
+          <Route path="/about" element={<About />} />
 
-        <Route
-          path="users"
-          element={
-            <PriavteRoutes name={18} age={19}>
-              <User />
-            </PriavteRoutes>
-          }
-        />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
+          <Route
+            path="users"
+            element={
+              <PriavteRoutes name="cong">
+                <User />
+              </PriavteRoutes>
+            }
+          />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
 
-        <Route index element={<Home />} />
-
-        <Route path="*" element={"404"} />
-      </Route>
-    </Routes>
+          <Route index element={<Home />} />
+          <Route
+            path="roles"
+            element={
+              <PriavteRoutes name="cong">
+                <Role />
+              </PriavteRoutes>
+            }
+          />
+          <Route
+            path="group-role"
+            element={
+              <PriavteRoutes name="cong">
+                <GroupRole />
+              </PriavteRoutes>
+            }
+          />
+          <Route path="*" element={"404"} />
+        </Route>
+      </Routes>
+    </UserProvider>
   </BrowserRouter>
 );
 

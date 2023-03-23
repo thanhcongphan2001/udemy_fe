@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Toast } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { loginUser } from "../../services/User";
 import "./login.scss";
-
+import { UserContext } from "../../context/UserContext";
 function Login() {
+  const { loginContext, user } = useContext(UserContext);
+
   const navigate = useNavigate();
   const isvaliddata = {
     isLogin: true,
@@ -17,6 +19,11 @@ function Login() {
   const [isLogin, setIsLogin] = useState("");
   const [password, setPassword] = useState("");
 
+  useEffect(() => {
+    if (user && user.isAuthenticated) {
+      navigate("/");
+    }
+  }, []);
   const handleLogin = async () => {
     setValid(isvaliddata);
     if (!isLogin) {
@@ -35,24 +42,36 @@ function Login() {
       toast.error("emty pass");
       return;
     }
-    const datares = await loginUser(isLogin, password);
 
+    const datares = await loginUser(isLogin, password);
+    console.log(datares);
     if (datares && datares.data && +datares.data.EC === 0) {
       toast.success(datares.data.EM);
-
+      let groupWithRoles = datares.data.DT.groupWithRoles;
+      let email = datares.data.DT.email;
+      let token = datares.data.DT.access_token;
       let data = {
         isAuthenticated: "true",
-        token: "fake token",
+        isLoading: false,
+        token: token,
+        account: {
+          groupWithRoles,
+          email,
+        },
       };
-      sessionStorage.setItem("account", JSON.stringify(data));
+
+      loginContext(data);
 
       navigate("/users");
+      return;
     }
     if (datares && datares.data && +datares.data.EC !== 0) {
       toast.error(datares.data.EM);
     }
+    // } else {
+    //   toast.error("Server Die");
+    // }
   };
-  console.log("hello");
 
   return (
     <Container className="mt-3">
